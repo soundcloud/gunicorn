@@ -21,13 +21,19 @@
 use_inline_resources
 
 action :install do
-  python_virtualenv new_resource.virtualenv do
-    action :create
-  end if new_resource.virtualenv
+  if new_resource.virtualenv then
+    python_virtualenv new_resource.virtualenv do
+      action :create
+    end if new_resource.virtualenv
 
-  python_pip 'gunicorn' do
-    virtualenv new_resource.virtualenv
-    action :install
+    python_package "gunicorn" do
+      virtualenv new_resource.virtualenv
+      action :install
+    end
+  else
+    python_package "gunicorn" do
+      action :install
+    end
   end
 
   new_resource.updated_by_last_action(true)
